@@ -6,8 +6,10 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { CalendarProvider } from 'react-native-calendars';
+import { EventProvider } from '@/contexts/EventContext';
+import { CustomCalendarProvider } from '@/contexts/CalendarContex';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -28,10 +30,16 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <CustomCalendarProvider>
+        <CalendarProvider date={new Date().toISOString().split('T')[0]}>
+          <EventProvider>
+            <Stack>
+              <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </EventProvider>
+        </CalendarProvider>
+      </CustomCalendarProvider>
     </ThemeProvider>
   );
 }
